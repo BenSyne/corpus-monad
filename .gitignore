@@ -10,3 +10,11 @@ data/store/
 scorer/state.json
 *.log
 .DS_Store
+
+# internal working docs
+z_ai_workspace/
+CLAUDE.md
+AGENT.md
+AGENTS.md
+progress.md
+docs/CHANGELOG.md
