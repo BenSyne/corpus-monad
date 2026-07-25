@@ -5,6 +5,7 @@
       "args": ["tsx", "mcp/src/index.ts"],
       "cwd": "/Users/bensyne/Monad",
       "env": {
+        "NETWORK": "testnet",
         "CORPUS_SCORER_API": "http://127.0.0.1:8787"
       }
     }
