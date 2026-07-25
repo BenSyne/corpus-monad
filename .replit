@@ -52,3 +52,8 @@ externalPort = 80
 [[ports]]
 localPort = 8787
 externalPort = 3000
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "export PATH=\"$PWD/.foundry-bin:$HOME/.foundry/bin:$PATH\" NETWORK=local RPC_URL=http://127.0.0.1:8545 && bash scripts/reset.sh --full && pnpm web"]
+build = ["bash", "-c", "mkdir -p .foundry-bin && curl -sSL https://github.com/foundry-rs/foundry/releases/download/v1.7.1/foundry_v1.7.1_linux_amd64.tar.gz | tar -xz -C .foundry-bin"]
