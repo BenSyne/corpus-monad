@@ -433,6 +433,41 @@
     P.push({ x: 0, y: 0, tx: 0, ty: 0, r: [90,80,150], tr: [90,80,150], size: 1.4 + rnd(i, 1) * rnd(i, 2) * 3.0 });
   }
 
+  // A glow sprite drawn once into an offscreen canvas, then stamped per particle.
+  // Canvas shadowBlur is recomputed per draw call and is far too slow for a few
+  // hundred particles a frame; a cached radial-gradient sprite is not.
+  var SPR = 64;
+  var sprite = document.createElement("canvas");
+  sprite.width = sprite.height = SPR;
+  (function () {
+    var g = sprite.getContext("2d");
+    var grd = g.createRadialGradient(SPR / 2, SPR / 2, 0, SPR / 2, SPR / 2, SPR / 2);
+    grd.addColorStop(0, "rgba(255,255,255,1)");
+    grd.addColorStop(0.22, "rgba(255,255,255,0.85)");
+    grd.addColorStop(0.55, "rgba(255,255,255,0.22)");
+    grd.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = grd;
+    g.fillRect(0, 0, SPR, SPR);
+  })();
+
+  // One tinted copy of the sprite per colour bucket, so drawing is a plain
+  // drawImage with no per-particle compositing work.
+  var TINTS = {};
+  function tinted(r, g, b) {
+    var key = (r >> 4) + "_" + (g >> 4) + "_" + (b >> 4);
+    var c = TINTS[key];
+    if (c) return c;
+    c = document.createElement("canvas");
+    c.width = c.height = SPR;
+    var cx2 = c.getContext("2d");
+    cx2.drawImage(sprite, 0, 0);
+    cx2.globalCompositeOperation = "source-in";
+    cx2.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+    cx2.fillRect(0, 0, SPR, SPR);
+    TINTS[key] = c;
+    return c;
+  }
+
   function resize() {
     W = window.innerWidth; H = window.innerHeight;
     cv.width = W * DPR; cv.height = H * DPR;
@@ -549,14 +584,9 @@
       var oy = Math.cos(time * 0.5 + i * 1.3) * wob;
       var sz = p.size;
       var cr = Math.round(p.r[0]), cg = Math.round(p.r[1]), cb = Math.round(p.r[2]);
-      ctx.beginPath();
-      ctx.fillStyle = "rgba(" + cr + "," + cg + "," + cb + ",0.9)";
-      ctx.shadowColor = "rgba(" + cr + "," + cg + "," + cb + ",0.9)";
-      ctx.shadowBlur = sz * 4;
-      ctx.arc(p.x + ox, p.y + oy, sz, 0, Math.PI * 2);
-      ctx.fill();
+      var d = sz * 7;
+      ctx.drawImage(tinted(cr, cg, cb), p.x + ox - d / 2, p.y + oy - d / 2, d, d);
     }
-    ctx.shadowBlur = 0;
     requestAnimationFrame(frame);
   }
 
