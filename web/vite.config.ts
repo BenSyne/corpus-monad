@@ -11,4 +11,12 @@ export default defineConfig({
     },
   },
   server: { port: 5173, strictPort: true },
+  build: {
+    rollupOptions: {
+      input: {
+        landing: fileURLToPath(new URL("./index.html", import.meta.url)),
+        app: fileURLToPath(new URL("./app.html", import.meta.url)),
+      },
+    },
+  },
 });

@@ -18,7 +18,12 @@ Then, in a second terminal:
 pnpm web
 ```
 
-Open **http://localhost:5173** and put it on the projector. It should show four zeroed counters and "No submissions yet."
+This serves two pages:
+
+- **http://localhost:5173** — the landing page. A scroll-driven 3D pitch: the story told through a particle field that morphs from chaos into the corpus, deflects attacks, and warps into the live market. Open this on the projector to start.
+- **http://localhost:5173/app.html** — the live dashboard. Four zeroed counters and "No submissions yet." The landing's "Enter the live market" button links straight here.
+
+**Opening move:** put the landing page up and scroll through it slowly while you talk — it *is* the pitch. When you reach the end, click **Enter the live market**, then run the demo below against the live dashboard.
 
 ---
 

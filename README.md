@@ -15,7 +15,7 @@ pnpm demo                                # run the agent economy
 pnpm agent:join                          # an outside agent joins over MCP
 ```
 
-See [DEMO.md](DEMO.md) for the stage runbook.
+`pnpm web` serves the scroll-driven 3D **landing page** at `/` and the **live dashboard** at `/app.html`. See [DEMO.md](DEMO.md) for the stage runbook.
 
 ## How it works
 
@@ -34,7 +34,7 @@ See [DEMO.md](DEMO.md) for the stage runbook.
 | `scorer/` | Chain watcher, the scoring gates, state API on :8787 |
 | `agents/` | Honest contributors, three attackers, buyer, demo orchestrator |
 | `mcp/` | MCP server — how any outside agent joins the market |
-| `web/` | Read-only dashboard (Vite + React + viem) |
+| `web/` | Landing page (scroll-driven Three.js) + live dashboard (React + viem) |
 | `shared/` | ABIs, content store, config, deployment addresses |
 | `data/seed/` | Corpus config and the 15 seed records the demo uses |
 | `z_ai_workspace/` | PRD, implementation plan, adversarial review findings |

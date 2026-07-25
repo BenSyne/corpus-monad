@@ -30,8 +30,10 @@ body {
 
 /* header */
 .header { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+.brand-link { text-decoration: none; color: inherit; display: block; }
+.brand-link:hover .brand span { text-shadow: 0 0 16px var(--purple); }
 .brand { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-.brand span { color: var(--purple); }
+.brand span { color: var(--purple); transition: text-shadow 0.25s; }
 .tagline { color: var(--muted); font-size: 14px; }
 .pill {
   font-family: var(--mono); font-size: 12px; padding: 5px 11px; border-radius: 999px;

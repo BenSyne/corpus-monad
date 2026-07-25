@@ -17,12 +17,12 @@ export function App() {
   return (
     <div className="app">
       <header className="header">
-        <div>
+        <a href="/" className="brand-link">
           <div className="brand">
             Corpus<span>.</span>
           </div>
           <div className="tagline">Data royalties for the agent economy</div>
-        </div>
+        </a>
         <div className="spacer" />
         <div className="pill">{deployment.network} · chain {deployment.chainId}</div>
         <div className={`pill ${state.chainOnline ? "live" : "stale"}`}>
