@@ -39,8 +39,17 @@ body {
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 45%, transparent 40%, rgba(7, 6, 13, 0.55) 100%),
-    linear-gradient(180deg, rgba(7, 6, 13, 0.35) 0%, transparent 20%, transparent 80%, rgba(7, 6, 13, 0.6) 100%);
+    radial-gradient(ellipse 70% 55% at 50% 45%, transparent 35%, rgba(7, 6, 13, 0.5) 100%),
+    linear-gradient(180deg, rgba(7, 6, 13, 0.3) 0%, transparent 22%, transparent 78%, rgba(7, 6, 13, 0.55) 100%);
+}
+/* A soft dark wash under the left-aligned copy so the brighter field never
+   fights the text. It fades out to the right where the particles breathe. */
+.text-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(7, 6, 13, 0.82) 0%, rgba(7, 6, 13, 0.5) 34%, transparent 62%);
 }
 body.no-webgl .scene {
   background: radial-gradient(ellipse 900px 600px at 30% 10%, #1d1633 0%, var(--bg) 60%);
@@ -131,6 +140,7 @@ h1 {
   letter-spacing: -3px;
   font-weight: 780;
   margin-bottom: 28px;
+  text-shadow: 0 4px 40px rgba(7, 6, 13, 0.8);
 }
 h1 em {
   font-style: normal;
@@ -145,6 +155,7 @@ h2 {
   letter-spacing: -1.8px;
   font-weight: 750;
   margin-bottom: 22px;
+  text-shadow: 0 4px 34px rgba(7, 6, 13, 0.75);
 }
 .lede {
   font-size: clamp(17px, 2.1vw, 22px);

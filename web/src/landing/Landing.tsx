@@ -45,6 +45,7 @@ export function Landing() {
     <>
       <canvas ref={canvasRef} className="scene" />
       <div className="scene-veil" />
+      <div className="text-scrim" />
 
       <nav className="nav">
         <div className="nav-brand">Corpus<span>.</span></div>
