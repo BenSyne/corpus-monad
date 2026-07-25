@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2023", "DOM"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["node", "vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "@corpus/shared": ["shared/src/index.ts"],
+      "@corpus/shared/*": ["shared/src/*"]
+    }
+  },
+  "include": ["shared/src", "scorer/src", "agents/src", "web/src", "scripts"],
+  "exclude": ["node_modules", "contracts/lib", "web/dist"]
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+out/
+cache/
+broadcast/
+.env
+.env.*
+!.env.example
+data/store/
+scorer/state.json
+*.log
+.DS_Store
