@@ -40,7 +40,11 @@ console.log("  Connecting over MCP — the same way Claude Desktop would");
 console.log("════════════════════════════════════════════════════════════\n");
 
 await client.connect(
-  new StdioClientTransport({ command: "npx", args: ["tsx", join(here, "index.ts")], cwd: root }),
+  new StdioClientTransport({
+    command: join(root, "node_modules", ".bin", "tsx"),
+    args: [join(here, "index.ts")],
+    cwd: root,
+  }),
 );
 
 const { tools } = await client.listTools();

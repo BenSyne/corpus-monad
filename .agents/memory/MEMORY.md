@@ -1,0 +1,1 @@
+- [Replit env setup quirks](replit-env-quirks.md) — Foundry lives at ~/.foundry/bin (not on PATH); pnpm hangs if packageManager pin mismatches installed pnpm; firewall may block old package versions.

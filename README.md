@@ -10,7 +10,7 @@ The point is that the rewards are **royalty shares backed by real revenue**, not
 
 ```bash
 pnpm install && pnpm demo:reset --full   # chain + contracts + scorer
-pnpm web                                 # dashboard at localhost:5173
+pnpm web                                 # dashboard at localhost:5000
 pnpm demo                                # run the agent economy
 pnpm agent:join                          # an outside agent joins over MCP
 ```
