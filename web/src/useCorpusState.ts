@@ -4,17 +4,28 @@ import deployment from "@deployment";
 import { corpusAbi } from "@abi";
 
 const POLL_MS = 700;
-const SCORER_API = "http://127.0.0.1:8787";
+
+/**
+ * A hosted build has to talk to endpoints the visitor's browser can actually
+ * reach. The deployment file is written for whoever deployed the contracts, so
+ * these overrides let one build serve a public chain and a public scorer without
+ * touching the committed addresses.
+ */
+const RPC_URL = import.meta.env.VITE_RPC_URL || deployment.rpcUrl;
+const SCORER_API = import.meta.env.VITE_SCORER_API || "http://127.0.0.1:8787";
+const CORPUS_ADDRESS = (import.meta.env.VITE_CORPUS_ADDRESS || deployment.corpus) as Address;
+const CHAIN_ID = Number(import.meta.env.VITE_CHAIN_ID || deployment.chainId);
+export const EXPLORER = import.meta.env.VITE_EXPLORER || deployment.explorer || "";
 
 const chain = {
-  id: deployment.chainId,
+  id: CHAIN_ID,
   name: deployment.network,
   nativeCurrency: { name: "Monad", symbol: "MON", decimals: 18 },
-  rpcUrls: { default: { http: [deployment.rpcUrl] } },
+  rpcUrls: { default: { http: [RPC_URL] } },
 } as const;
 
-const client = createPublicClient({ chain, transport: http(deployment.rpcUrl) });
-const corpus = deployment.corpus as Address;
+const client = createPublicClient({ chain, transport: http(RPC_URL) });
+const corpus = CORPUS_ADDRESS;
 
 export type Submission = {
   id: number;

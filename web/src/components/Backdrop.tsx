@@ -9,10 +9,12 @@ export function Backdrop() {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const el = ref.current;
+    if (!el) return;
+    const g2d = el.getContext("2d");
+    if (!g2d) return;
+    const canvas = el;
+    const ctx = g2d;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0, h = 0, raf = 0;
