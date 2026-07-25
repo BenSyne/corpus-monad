@@ -180,6 +180,17 @@
   .tools { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 30px; max-width: 76ch; }
   .tools span { font-family: var(--mono); font-size: 13px; color: var(--purple-lite); padding: 8px 13px; border: 1px solid var(--line); border-radius: 8px; background: rgba(131,110,249,0.06); }
 
+  /* business-model split bar */
+  .splitbar { display: flex; height: 48px; border-radius: 12px; overflow: hidden; margin: 30px 0 10px; max-width: 74ch; font-family: var(--mono); font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; }
+  .splitbar > div { display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+  .splitbar .sh { background: var(--purple); color: #0a0812; }
+  .splitbar .sc { background: rgba(131,110,249,0.42); color: var(--ink); }
+  .splitbar .sp { background: var(--teal); color: #06120c; }
+  .take { margin-top: 22px; font-size: clamp(16px, 1.9vw, 21px); line-height: 1.5; color: #d3cee8; max-width: 62ch; }
+  .take b { color: var(--teal); }
+  .caption { font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: 0.4px; margin-top: 16px; }
+  .colhead { font-weight: 650; color: var(--ink); margin-bottom: 8px; font-size: clamp(15px,1.7vw,18px); }
+
   .close-cta { margin-top: 34px; font-family: var(--mono); font-size: clamp(14px, 1.6vw, 17px); letter-spacing: 1px; color: var(--teal); }
 
   @media (max-width: 820px) {
@@ -231,6 +242,25 @@
     </div>
   </section>
 
+  <!-- MARKET · WHY NOW -->
+  <section class="slide" data-formation="network">
+    <div class="wrap">
+      <div class="eyebrow r" style="--i:0">The market · why now</div>
+      <h2 class="r" style="--i:1">Labs will pay for data.<br>They already do.</h2>
+      <div class="metrics r" style="--i:2">
+        <div><b class="g">$250M+</b><span>News Corp × OpenAI, reported</span></div>
+        <div><b class="g">$60M/yr</b><span>Reddit data licensing, reported</span></div>
+        <div><b class="g">multi&#8209;$B</b><span>training-data market, ~25%+ CAGR</span></div>
+      </div>
+      <div class="list" style="margin-top:26px">
+        <div class="li r" style="--i:3"><span class="k">→</span><div><b>Agents can now collect data at machine scale</b> — the supply side just showed up.</div></div>
+        <div class="li r" style="--i:4"><span class="k">→</span><div><b>Monad makes per-record settlement viable</b> — 10k TPS, sub-cent fees. It was impossible on L1.</div></div>
+        <div class="li r" style="--i:5"><span class="k">→</span><div><b>MCP turns every agent into a participant</b> — no integration, no gatekeeper.</div></div>
+      </div>
+      <div class="caption r" style="--i:6">Deal figures are public reports — confirm before presenting. Market size illustrative.</div>
+    </div>
+  </section>
+
   <!-- 3 — SOLUTION / THE LOOP -->
   <section class="slide" data-formation="loop">
     <div class="wrap">
@@ -254,6 +284,21 @@
         <div class="row r" style="--i:5"><div class="attack">Off-topic filler</div><div class="defense">Zero of the curator's domain terms. Out of scope, bond forfeited.</div></div>
       </div>
       <div class="footline r" style="--i:6">Minting is never free — 20% of every bond pays the holders it dilutes. Junk earns a claim on nothing while costing real money.</div>
+    </div>
+  </section>
+
+  <!-- BUSINESS MODEL -->
+  <section class="slide" data-formation="chain">
+    <div class="wrap">
+      <div class="eyebrow r" style="--i:0">Business model</div>
+      <h2 class="r" style="--i:1">The protocol earns on<br>every sale, forever.</h2>
+      <div class="splitbar r" style="--i:2">
+        <div class="sh" style="flex:70">70% · contributors</div>
+        <div class="sc" style="flex:20">20% · curator</div>
+        <div class="sp" style="flex:10">10% · protocol</div>
+      </div>
+      <div class="take r" style="--i:3"><b>10% of every access sale</b> is the protocol's cut — and mint fees plus slashed bonds accrue to holders, so quality funds itself. Data lives off-chain; only settlement is on-chain, so the marginal cost of a corpus is close to zero.</div>
+      <div class="footline r" style="--i:4">The flywheel: more contributors → richer datasets → more buyers → more revenue → more contributors.</div>
     </div>
   </section>
 
@@ -315,6 +360,25 @@
         <div class="li r" style="--i:5"><span class="k">03</span><div><b>Slash exclusion is per-address</b> — a second wallet gets around it. That's an identity problem, and a test proves it rather than hiding it.</div></div>
         <div class="li r" style="--i:6"><span class="k">04</span><div><b>No revocation yet</b> for an accepted record that later proves wrong. A challenge market is the answer.</div></div>
       </div>
+    </div>
+  </section>
+
+  <!-- TEAM · THE ASK -->
+  <section class="slide" data-formation="loop">
+    <div class="wrap">
+      <div class="eyebrow good r" style="--i:0">Team · the ask</div>
+      <h2 class="r" style="--i:1">Built at Blitz.<br>Here's the ask.</h2>
+      <div class="two">
+        <div class="col r" style="--i:2">
+          <div class="colhead">Who</div>
+          <p>Ben Syne <span style="color:var(--faint)">[+ your team]</span> — shipped the contracts, the scorer, the agents, the MCP server, and this deck in a single build.</p>
+        </div>
+        <div class="col r" style="--i:3">
+          <div class="colhead">The ask</div>
+          <p>Your vote tonight. Builders to take it to Monad testnet. And design partners — the labs who'd buy verified eval data.</p>
+        </div>
+      </div>
+      <div class="caption r" style="--i:4">Swap the bracketed bits for your team and a contact before you present.</div>
     </div>
   </section>
 
