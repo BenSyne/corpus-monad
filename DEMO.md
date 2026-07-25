@@ -55,11 +55,50 @@ Click any card to open its provenance drawer — contributor, content hash, bond
 
 ---
 
+## Act 5 — a real agent connects (the closer)
+
+Everything above is *our* agents. This is somebody else's.
+
+```bash
+pnpm agent:join
+```
+
+An MCP client connects to Corpus the same way Claude Desktop does — spawn, handshake, list tools — then reads the corpus spec, contributes a record, and finds out what it earned. Watch the dashboard: a new contributor labelled **outside agent (MCP)** appears with real shares.
+
+What to say: *"That agent had never seen this system. It asked what the corpus wanted, contributed data that fit, and now owns a share of every future sale. No integration, no API key — it speaks MCP, and this market speaks MCP back."*
+
+Then it tries to resubmit the same record and gets refused before it costs anything.
+
+### Doing it live from Claude Desktop instead
+
+More impressive if you have a minute and the room is into it. `.mcp.json` is already in the repo, so **Claude Code** picks it up automatically in a new session started from this directory:
+
+```bash
+claude
+```
+
+Then ask it: *"Use the corpus tools to see what this dataset wants, then contribute a model failure you know about."* It will call `corpus_info`, write a record, call `corpus_contribute`, and check its score — live, on the projector.
+
+For **Claude Desktop**, add the same block to its config:
+
+```json
+{ "mcpServers": { "corpus": { "command": "npx", "args": ["tsx", "mcp/src/index.ts"], "cwd": "/Users/bensyne/Monad" } } }
+```
+
+Have this rehearsed before you rely on it. The scripted `pnpm agent:join` is the safe version and makes the same point.
+
+### The eight tools an agent gets
+
+`corpus_info` · `corpus_contribute` · `corpus_check_submission` · `corpus_my_earnings` · `corpus_claim_earnings` · `corpus_buy_access` · `corpus_read_data` · `corpus_recent_activity`
+
+---
+
 ## If something goes wrong
 
 - **A step hangs or a number looks wrong:** `pnpm demo:reset --full`, then `pnpm demo`. Takes about 15 seconds.
 - **Dashboard is blank:** check the two pills top-right. "chain offline" means anvil died — reset. "scorer offline" shows a banner but everything else still works; keep going, you lose only the reason text.
 - **Really short on time:** `pnpm demo --fast` runs the whole arc with no pauses in about 25 seconds.
+- **MCP agent won't connect:** it needs the scorer running (`pnpm demo:reset --full` covers it). `pnpm agent:join --fast` skips the pacing.
 - **Someone wants proof it's real:** `forge test` in `contracts/` — 55 tests including a 512-run solvency fuzz.
 
 ---
@@ -71,6 +110,8 @@ Click any card to open its provenance drawer — contributor, content hash, bond
 **"Why Monad?"** Paying agents per record needs 10,000 TPS and sub-cent fees; this dies on Ethereum L1. 600ms finality is why the loop feels live on stage. And each corpus has isolated state, so submissions to *different* corpora have disjoint write sets and execute in parallel — the parallelism is across corpora, not within one.
 
 **"What stops people farming it?"** Three things, and the third is the real one. Duplicates are rejected on-chain. Junk forfeits its bond. And minting is never free — 20% of every accepted bond is paid to the holders the new shares dilute. Rewards are claims on real revenue, so farming junk earns claims on nothing while costing money.
+
+**"Can my agent use this?"** Yes — that's what Act 5 shows. It's an MCP server, so any agent that speaks MCP connects with no integration work: Claude Desktop, Claude Code, or your own. Eight tools, and the corpus tells the agent what it wants in the first call.
 
 **"What's centralized?"** The scorer, and we say so. It's one trusted oracle today. It can't touch funds, but it decides what gets minted. Contributors are protected if it goes *offline* — they reclaim their bond after a timeout — but not if it turns hostile. The path forward is a staked scorer set or optimistic scoring with a challenge window. We built the honest version of that trade-off rather than mocking a decentralized one.
 

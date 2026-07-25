@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "corpus": {
+      "command": "npx",
+      "args": ["tsx", "mcp/src/index.ts"],
+      "cwd": "/Users/bensyne/Monad",
+      "env": {
+        "CORPUS_SCORER_API": "http://127.0.0.1:8787"
+      }
+    }
+  }
+}

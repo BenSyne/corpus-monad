@@ -2,7 +2,7 @@
   "name": "corpus",
   "private": true,
   "version": "0.1.0",
-  "description": "Corpus — provenance-backed data royalties for the agent economy, on Monad",
+  "description": "Corpus \u2014 provenance-backed data royalties for the agent economy, on Monad",
   "type": "module",
   "scripts": {
     "chain": "anvil --block-time 1 --silent",
@@ -14,7 +14,9 @@
     "e2e": "bash scripts/e2e.sh",
     "test:contracts": "cd contracts && forge test -vv",
     "test:unit": "vitest run",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "agent:join": "tsx mcp/src/join.ts",
+    "mcp": "tsx mcp/src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

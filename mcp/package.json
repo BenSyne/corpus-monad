@@ -1,0 +1,12 @@
+{
+  "name": "@corpus/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@corpus/shared": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "viem": "^2.21.55",
+    "zod": "^3.25.0"
+  }
+}

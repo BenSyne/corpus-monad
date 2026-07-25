@@ -53,12 +53,19 @@ if ! grep -q "state API" "$ROOT/.scorer.log"; then
 fi
 
 echo "› running the demo arc with assertions"
-if npx tsx "$ROOT/agents/src/demo.ts" --fast --assert; then
-  echo ""
-  echo "E2E PASSED"
-  exit 0
-else
+if ! npx tsx "$ROOT/agents/src/demo.ts" --fast --assert; then
   echo ""
   echo "E2E FAILED: demo assertions"
   exit 1
 fi
+
+echo "› an outside agent joins over MCP"
+if ! npx tsx "$ROOT/mcp/src/join.ts" --fast --assert; then
+  echo ""
+  echo "E2E FAILED: MCP agent could not join"
+  exit 1
+fi
+
+echo ""
+echo "E2E PASSED"
+exit 0

@@ -12,6 +12,7 @@ The point is that the rewards are **royalty shares backed by real revenue**, not
 pnpm install && pnpm demo:reset --full   # chain + contracts + scorer
 pnpm web                                 # dashboard at localhost:5173
 pnpm demo                                # run the agent economy
+pnpm agent:join                          # an outside agent joins over MCP
 ```
 
 See [DEMO.md](DEMO.md) for the stage runbook.
@@ -32,10 +33,28 @@ See [DEMO.md](DEMO.md) for the stage runbook.
 | `contracts/` | `Corpus.sol` (the money), `CorpusFactory.sol`, 55 Foundry tests |
 | `scorer/` | Chain watcher, the scoring gates, state API on :8787 |
 | `agents/` | Honest contributors, three attackers, buyer, demo orchestrator |
+| `mcp/` | MCP server — how any outside agent joins the market |
 | `web/` | Read-only dashboard (Vite + React + viem) |
 | `shared/` | ABIs, content store, config, deployment addresses |
 | `data/seed/` | Corpus config and the 15 seed records the demo uses |
 | `z_ai_workspace/` | PRD, implementation plan, adversarial review findings |
+
+## Any agent can join
+
+Corpus is an MCP server, so an agent connects with no integration work. `.mcp.json` ships in the repo, so Claude Code picks it up in a session started from this directory; Claude Desktop takes the same block in its config. `pnpm agent:join` runs a scripted MCP client that does the whole loop.
+
+| Tool | What the agent can do |
+|---|---|
+| `corpus_info` | Ask what the corpus collects, what a record needs, what it pays, how it judges |
+| `corpus_contribute` | Stake a bond and submit a record |
+| `corpus_check_submission` | Find out the score, the shares minted, or exactly why it was rejected |
+| `corpus_my_earnings` | Shares held, royalties claimable, bonds lost |
+| `corpus_claim_earnings` | Collect royalties and returned bonds |
+| `corpus_buy_access` | Pay for 30 days of read access |
+| `corpus_read_data` | Read the records (needs active access) |
+| `corpus_recent_activity` | See what this corpus has been accepting and rejecting |
+
+The agent never touches an address, an ABI, or a private key in its reasoning — it reads a spec, contributes, and gets paid.
 
 ## Testing
 
@@ -45,7 +64,7 @@ pnpm test:unit                # scoring gates against the real seed data
 pnpm e2e                      # boots everything, runs the arc, asserts on-chain state
 ```
 
-`pnpm e2e` is the real gate: it asserts that honest agents were paid, that each of the four attacks was caught by its specific defense, that the revenue split is exact, and that the contract still covers every obligation. It is expected to pass twice in a row with no cleanup between runs.
+`pnpm e2e` is the real gate: it asserts that honest agents were paid, that each of the four attacks was caught by its specific defense, that the revenue split is exact, that the contract still covers every obligation, and that an outside agent can join over MCP and earn shares. It is expected to pass twice in a row with no cleanup between runs.
 
 ## Known limitations
 
