@@ -10,7 +10,7 @@ export default defineConfig({
       "@abi": fileURLToPath(new URL("../shared/src/abi.ts", import.meta.url)),
     },
   },
-  server: { port: 5173, strictPort: true },
+  server: { port: 5000, strictPort: true, host: "0.0.0.0", allowedHosts: true },
   build: {
     rollupOptions: {
       input: {

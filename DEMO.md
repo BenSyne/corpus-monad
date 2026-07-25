@@ -10,7 +10,7 @@ Everything below runs on this laptop with **no network**. Four terminals, four c
 pnpm demo:reset --full
 ```
 
-That kills anything on ports 8545/8787/5173, wipes stored content and scorer state, starts a fresh chain, deploys, and starts the scorer. **Run it before every rehearsal and again right before you present** — the run that matters is always the second one, and stale state from an earlier run is the single most likely way this breaks.
+That kills anything on ports 8545/8787, wipes stored content and scorer state, starts a fresh chain, deploys, and starts the scorer. **Run it before every rehearsal and again right before you present** — the run that matters is always the second one, and stale state from an earlier run is the single most likely way this breaks.
 
 Then, in a second terminal:
 
@@ -20,8 +20,8 @@ pnpm web
 
 This serves two pages:
 
-- **http://localhost:5173** — the landing page. A scroll-driven 3D pitch: the story told through a particle field that morphs from chaos into the corpus, deflects attacks, and warps into the live market. Open this on the projector to start.
-- **http://localhost:5173/app.html** — the live dashboard. Four zeroed counters and "No submissions yet." The landing's "Enter the live market" button links straight here.
+- **http://localhost:5000** — the landing page. A scroll-driven 3D pitch: the story told through a particle field that morphs from chaos into the corpus, deflects attacks, and warps into the live market. Open this on the projector to start.
+- **http://localhost:5000/app.html** — the live dashboard. Four zeroed counters and "No submissions yet." The landing's "Enter the live market" button links straight here.
 
 **Opening move:** put the landing page up and scroll through it slowly while you talk — it *is* the pitch. When you reach the end, click **Enter the live market**, then run the demo below against the live dashboard.
 

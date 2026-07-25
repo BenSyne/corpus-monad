@@ -1,10 +1,59 @@
-run = "pnpm install && pnpm --filter @corpus/web dev -- --host 0.0.0.0 --port 5000"
-entrypoint = "web/index.html"
-modules = ["nodejs-22"]
+modules = ["nodejs-20", "web", "python-3.12"]
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-25_05"
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Chain + Scorer"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Chain + Scorer"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export PATH=\"$HOME/.foundry/bin:$PATH\" NETWORK=local RPC_URL=http://127.0.0.1:8545 && bash scripts/reset.sh --full && tail -f .scorer.log .anvil.log"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm web"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 8787
+externalPort = 3000
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["bash", "-c", "export PATH=\"$PWD/.foundry-bin:$HOME/.foundry/bin:$PATH\" NETWORK=local RPC_URL=http://127.0.0.1:8545 && bash scripts/reset.sh --full && pnpm web"]
+build = ["bash", "-c", "mkdir -p .foundry-bin && curl -sSL https://github.com/foundry-rs/foundry/releases/download/v1.7.1/foundry_v1.7.1_linux_amd64.tar.gz | tar -xz -C .foundry-bin"]

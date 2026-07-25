@@ -8,8 +8,8 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export PATH="$HOME/.foundry/bin:$PATH"
 
-echo "› freeing ports 8545 (chain), 8787 (scorer), 5173 (dashboard)"
-lsof -ti:8545,8787,5173 2>/dev/null | xargs kill -9 2>/dev/null || true
+echo "› freeing ports 8545 (chain), 8787 (scorer)"
+lsof -ti:8545,8787 2>/dev/null | xargs kill -9 2>/dev/null || true
 pkill -f "anvil" 2>/dev/null || true
 pkill -f "scorer/src/index.ts" 2>/dev/null || true
 sleep 1
