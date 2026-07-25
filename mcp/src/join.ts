@@ -41,9 +41,14 @@ console.log("══════════════════════�
 
 await client.connect(
   new StdioClientTransport({
-    command: join(root, "node_modules", ".bin", "tsx"),
-    args: [join(here, "index.ts")],
+    command: "npx",
+    args: ["tsx", join(here, "index.ts")],
     cwd: root,
+    // The SDK starts the server with a minimal environment by default, which would
+    // silently point it at the local chain no matter what network was requested.
+    env: Object.fromEntries(
+      Object.entries(process.env).filter(([, v]) => v !== undefined),
+    ) as Record<string, string>,
   }),
 );
 

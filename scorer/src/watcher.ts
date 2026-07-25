@@ -12,6 +12,8 @@ const SUBMISSION_EVENT = parseAbiItem(
 );
 
 const POLL_MS = 700;
+/** Public RPCs cap eth_getLogs spans; 90 stays clear of the common 100-block limit. */
+const LOG_WINDOW = 90;
 /** A blob can lag its transaction by a moment; retry before calling it missing. */
 const MISSING_BLOB_RETRIES = 3;
 
@@ -72,20 +74,27 @@ export class Watcher {
     const head = Number(await publicClient.getBlockNumber());
     if (head < this.state.lastProcessedBlock) return;
 
-    const logs = await publicClient.getLogs({
-      address: corpus,
-      event: SUBMISSION_EVENT,
-      fromBlock: BigInt(this.state.lastProcessedBlock),
-      toBlock: BigInt(head),
-    });
+    // Public RPCs cap how many blocks a single log query may span, and Monad's
+    // sub-second blocks make that span pile up quickly, so walk the range in
+    // windows and record progress after each one.
+    let from = this.state.lastProcessedBlock;
+    while (from <= head) {
+      const to = Math.min(from + LOG_WINDOW - 1, head);
+      const logs = await publicClient.getLogs({
+        address: corpus,
+        event: SUBMISSION_EVENT,
+        fromBlock: BigInt(from),
+        toBlock: BigInt(to),
+      });
 
-    for (const log of logs) {
-      const id = Number(log.args.id);
-      await this.process(id, log.args.contentHash as string);
+      for (const log of logs) {
+        await this.process(Number(log.args.id), log.args.contentHash as string);
+      }
+
+      this.state.lastProcessedBlock = to + 1;
+      saveState(this.state);
+      from = to + 1;
     }
-
-    this.state.lastProcessedBlock = head + 1;
-    saveState(this.state);
   }
 
   private async process(id: number, contentHash: string): Promise<void> {
