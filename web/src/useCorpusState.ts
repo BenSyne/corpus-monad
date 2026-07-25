@@ -16,6 +16,10 @@ const SCORER_API = import.meta.env.VITE_SCORER_API || "http://127.0.0.1:8787";
 const CORPUS_ADDRESS = (import.meta.env.VITE_CORPUS_ADDRESS || deployment.corpus) as Address;
 const CHAIN_ID = Number(import.meta.env.VITE_CHAIN_ID || deployment.chainId);
 export const EXPLORER = import.meta.env.VITE_EXPLORER || deployment.explorer || "";
+export const CHAIN = { id: CHAIN_ID, corpus: CORPUS_ADDRESS };
+/** Derived from the chain actually being read, so the header can't claim the wrong network. */
+export const NETWORK_LABEL =
+  CHAIN_ID === 10143 ? "monad testnet" : CHAIN_ID === 143 ? "monad mainnet" : deployment.network;
 
 const chain = {
   id: CHAIN_ID,

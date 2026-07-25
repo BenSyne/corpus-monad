@@ -1,6 +1,5 @@
 import { useState } from "react";
-import deployment from "@deployment";
-import { useCorpusState, mon, shortAddress, ROLE_NAMES, type Submission } from "./useCorpusState.js";
+import { useCorpusState, mon, shortAddress, ROLE_NAMES, NETWORK_LABEL, CHAIN, type Submission } from "./useCorpusState.js";
 import { Feed } from "./components/Feed.js";
 import { Leaderboard } from "./components/Leaderboard.js";
 import { Revenue } from "./components/Revenue.js";
@@ -24,7 +23,7 @@ export function App() {
           <div className="tagline">Data royalties for the agent economy</div>
         </a>
         <div className="spacer" />
-        <div className="pill">{deployment.network} · chain {deployment.chainId}</div>
+        <div className="pill">{NETWORK_LABEL} · chain {CHAIN.id}</div>
         <div className={`pill ${state.chainOnline ? "live" : "stale"}`}>
           {state.chainOnline ? `block ${state.blockNumber}` : "chain offline"}
         </div>

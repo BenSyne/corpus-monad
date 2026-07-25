@@ -1,5 +1,4 @@
-import deployment from "@deployment";
-import { ROLE_NAMES, mon, shortAddress, type Detail, type Submission } from "../useCorpusState.js";
+import { ROLE_NAMES, mon, shortAddress, EXPLORER, CHAIN, type Detail, type Submission } from "../useCorpusState.js";
 
 const STATUS_TEXT = ["awaiting the scorer", "accepted", "rejected and slashed", "expired, bond reclaimed"];
 
@@ -36,9 +35,9 @@ export function Drawer({
         </>
       )}
 
-      {deployment.explorer && (
+      {EXPLORER && (
         <Row label="explorer">
-          <a href={`${deployment.explorer}/address/${deployment.corpus}`} target="_blank" rel="noreferrer">
+          <a href={`${EXPLORER}/address/${CHAIN.corpus}`} target="_blank" rel="noreferrer">
             view corpus on the explorer
           </a>
         </Row>
