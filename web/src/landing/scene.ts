@@ -27,6 +27,7 @@ const BLUE = new THREE.Color("#4aa8ff");
 const PINK = new THREE.Color("#ff5c7c");
 const AMBER = new THREE.Color("#ffb454");
 const DIM = new THREE.Color("#2a2540");
+const WHITE = new THREE.Color("#ffffff");
 
 const STAGES = 6;
 
@@ -57,12 +58,12 @@ const FRAG = /* glsl */ `
 type Cam = { pos: [number, number, number]; look: [number, number, number] };
 
 const CAMERAS: Cam[] = [
-  { pos: [0, 0, 33], look: [0, 0, 0] },
-  { pos: [3, 1.5, 25], look: [0, 0, 0] },
-  { pos: [0, 0, 30], look: [0, 0, 0] },
-  { pos: [0, 12, 22], look: [0, -1, 0] },
-  { pos: [0, 0, 37], look: [0, 0, 0] },
-  { pos: [0, 0, 6], look: [0, 0, -44] },
+  { pos: [0, 0, 34], look: [0, 0, 0] }, // scattered data
+  { pos: [1, 5, 24], look: [0, 0, 0] }, // the loop (torus, tilted so it reads as a ring)
+  { pos: [0, 0, 31], look: [0, 0, 0] }, // corpus cube + shield
+  { pos: [1, 3, 34], look: [0, 0, 0] }, // the chain
+  { pos: [2, 1, 39], look: [0, 0, 0] }, // parallel chains
+  { pos: [0, 0, 29], look: [0, 0, 0] }, // agent network
 ];
 
 function smoother(t: number): number {
@@ -168,57 +169,124 @@ export class ParticleScene {
       if (this.rand(i, 20) < 0.18) c.lerp(TEAL, this.rand(i, 21) * 0.7);
       this.writeCol(0, j, c);
 
-      // 1 — corpus lattice (fibonacci sphere, purple→teal by latitude)
-      this.sphere(i, 11.6, v);
-      v.x += (this.rand(i, 5) - 0.5) * 0.5;
-      v.y += (this.rand(i, 6) - 0.5) * 0.5;
-      this.write(1, j, v);
-      c.copy(PURPLE).lerp(TEAL, (v.y / 11.6 + 1) / 2);
-      this.writeCol(1, j, c);
-
-      // 2 — shield: ~28% flung out as red attackers, the rest a teal core
-      const attacker = this.rand(i, 7) < 0.28;
-      if (attacker) {
-        this.sphere(i, 19 + this.rand(i, 8) * 4, v);
-        this.write(2, j, v);
-        c.copy(PINK).lerp(AMBER, this.rand(i, 9) * 0.4);
-      } else {
-        this.sphere(i, 6.8 + this.rand(i, 10) * 0.8, v);
-        this.write(2, j, v);
-        c.copy(TEAL).lerp(PURPLE, this.rand(i, 11) * 0.5);
+      // 1 — the loop: a torus, the contribute → score → mint → earn cycle that
+      //     the whole market turns on
+      {
+        const R = 10.5;
+        const vv = this.rand(i, 31) * Math.PI * 2;
+        const rr = 2.7 * (0.55 + this.rand(i, 32) * 0.45);
+        const u = (i / n) * Math.PI * 2 + (this.rand(i, 30) - 0.5) * 0.06;
+        const ring = R + rr * Math.cos(vv);
+        v.set(ring * Math.cos(u), ring * Math.sin(u), rr * Math.sin(vv));
+        this.write(1, j, v);
+        // colour flows around the ring so the cycle reads as motion
+        c.copy(PURPLE).lerp(TEAL, 1 - Math.abs(0.5 - i / n) * 2);
+        this.writeCol(1, j, c);
       }
-      this.writeCol(2, j, c);
 
-      // 3 — proof grid (a ledger plane with a gentle wave)
-      const cols = Math.ceil(Math.sqrt(n * 1.6));
-      const rows = Math.ceil(n / cols);
-      const gx = (i % cols) / (cols - 1) - 0.5;
-      const gy = Math.floor(i / cols) / (rows - 1) - 0.5;
-      const px = gx * 40;
-      const py = gy * 23;
-      v.set(px, py, Math.sin(px * 0.32) * Math.cos(py * 0.36) * 2.4);
-      this.write(3, j, v);
-      c.copy(TEAL).lerp(PURPLE, (Math.sin(px * 0.4 + py * 0.3) + 1) / 2);
-      this.writeCol(3, j, c);
+      // 2 — the corpus, structured and defended: a crystalline cube of accepted
+      //     data, with rejected attackers flung out to a shell around it
+      {
+        if (this.rand(i, 7) < 0.28) {
+          this.sphere(i, 15 + this.rand(i, 8) * 3.5, v);
+          c.copy(PINK).lerp(AMBER, this.rand(i, 9) * 0.4);
+        } else {
+          const G = 9;
+          const sp = 11 / (G - 1);
+          const ix = Math.floor(this.rand(i, 41) * G);
+          const iy = Math.floor(this.rand(i, 42) * G);
+          const iz = Math.floor(this.rand(i, 43) * G);
+          v.set(
+            (ix - (G - 1) / 2) * sp + (this.rand(i, 44) - 0.5) * sp * 0.35,
+            (iy - (G - 1) / 2) * sp + (this.rand(i, 45) - 0.5) * sp * 0.35,
+            (iz - (G - 1) / 2) * sp + (this.rand(i, 46) - 0.5) * sp * 0.35,
+          );
+          c.copy(TEAL).lerp(PURPLE, iy / (G - 1));
+        }
+        this.write(2, j, v);
+        this.writeCol(2, j, c);
+      }
 
-      // 4 — parallel corpora (five distinct columns)
-      const colHues = [PURPLE, TEAL, BLUE, PINK, AMBER];
-      const col = i % 5;
-      const cx = (col - 2) * 8.6;
-      const ang = this.rand(i, 12) * Math.PI * 2;
-      const rad = 0.7 + this.rand(i, 13) * 2.1;
-      v.set(cx + Math.cos(ang) * rad, (this.rand(i, 14) - 0.5) * 22, Math.sin(ang) * rad);
-      this.write(4, j, v);
-      c.copy(colHues[col]!).lerp(new THREE.Color("#ffffff"), this.rand(i, 15) * 0.18);
-      this.writeCol(4, j, c);
+      // 3 — the chain: accepted records settle into blocks, linked in a line —
+      //     the on-chain ledger the proof rests on
+      {
+        const B = 7;
+        const gap = 4.6;
+        if (this.rand(i, 50) < 0.12) {
+          const b = Math.floor(this.rand(i, 51) * (B - 1));
+          const x0 = (b - (B - 1) / 2) * gap + 1.2;
+          const x1 = (b + 1 - (B - 1) / 2) * gap - 1.2;
+          const tt = this.rand(i, 52);
+          v.set(x0 + (x1 - x0) * tt, (this.rand(i, 54) - 0.5) * 0.5, (this.rand(i, 55) - 0.5) * 0.5);
+          c.copy(AMBER); // the links between blocks
+        } else {
+          const b = Math.floor(this.rand(i, 53) * B);
+          const bx = (b - (B - 1) / 2) * gap;
+          v.set(
+            bx + (this.rand(i, 56) - 0.5) * 2.3,
+            (this.rand(i, 57) - 0.5) * 2.3,
+            (this.rand(i, 58) - 0.5) * 2.3,
+          );
+          c.copy(b % 2 === 0 ? TEAL : PURPLE).lerp(WHITE, 0.1);
+        }
+        this.write(3, j, v);
+        this.writeCol(3, j, c);
+      }
 
-      // 5 — warp tunnel streaming toward the camera
-      const wAng = this.rand(i, 16) * Math.PI * 2;
-      const wRad = 2 + this.rand(i, 17) * 7;
-      v.set(Math.cos(wAng) * wRad, Math.sin(wAng) * wRad, 10 - this.rand(i, 18) * 88);
-      this.write(5, j, v);
-      c.copy(PURPLE).lerp(new THREE.Color("#ffffff"), this.rand(i, 19) * 0.55);
-      this.writeCol(5, j, c);
+      // 4 — parallel corpora: several chains running side by side at once, the
+      //     thing Monad's parallel execution is for
+      {
+        const L = 4;
+        const Bp = 5;
+        const gap = 4.8;
+        const lane = i % L;
+        const hues = [PURPLE, TEAL, BLUE, PINK];
+        const laneY = (lane - (L - 1) / 2) * 5.4;
+        const laneZ = (lane - (L - 1) / 2) * 1.6;
+        const b = Math.floor(this.rand(i, 60) * Bp);
+        const bx = (b - (Bp - 1) / 2) * gap;
+        v.set(
+          bx + (this.rand(i, 61) - 0.5) * 2,
+          laneY + (this.rand(i, 62) - 0.5) * 2,
+          laneZ + (this.rand(i, 63) - 0.5) * 2,
+        );
+        this.write(4, j, v);
+        c.copy(hues[lane]!).lerp(WHITE, this.rand(i, 64) * 0.15);
+        this.writeCol(4, j, c);
+      }
+
+      // 5 — the network: a corpus hub with agents connecting in along spokes,
+      //     the way any agent joins over MCP
+      {
+        const K = 12;
+        if (this.rand(i, 70) < 0.34) {
+          // the hub — the corpus itself
+          const rr = 3.3 * Math.cbrt(this.rand(i, 71));
+          const th = this.rand(i, 72) * Math.PI * 2;
+          const ph = Math.acos(2 * this.rand(i, 73) - 1);
+          v.set(rr * Math.sin(ph) * Math.cos(th), rr * Math.sin(ph) * Math.sin(th), rr * Math.cos(ph));
+          c.copy(PURPLE).lerp(WHITE, 0.4);
+        } else {
+          // a spoke out to a connected agent
+          const spoke = i % K;
+          const sy = 1 - (spoke / (K - 1)) * 2;
+          const sr = Math.sqrt(Math.max(0, 1 - sy * sy));
+          const sth = 2.399963229728653 * spoke;
+          const tt = this.rand(i, 74);
+          const dist = 4 + tt * 11;
+          const node = tt > 0.82;
+          const jit = node ? 1.1 : 0.25;
+          v.set(
+            Math.cos(sth) * sr * dist + (this.rand(i, 75) - 0.5) * jit,
+            sy * dist + (this.rand(i, 76) - 0.5) * jit,
+            Math.sin(sth) * sr * dist + (this.rand(i, 77) - 0.5) * jit,
+          );
+          c.copy(PURPLE).lerp(TEAL, tt);
+          if (node) c.lerp(WHITE, 0.3);
+        }
+        this.write(5, j, v);
+        this.writeCol(5, j, c);
+      }
     }
   }
 
@@ -341,10 +409,13 @@ export class ParticleScene {
     const pos = this.posAttr.array as Float32Array;
     const col = this.colAttr.array as Float32Array;
 
-    // Idle drift eases off on the crisp formations (proof grid, columns), and a
-    // burst of turbulence kicks in whenever the field is mid-morph.
-    const crisp = mix > 0.5 ? (b >= 3 ? 1 : 0) : a >= 3 ? 1 : 0;
-    const idle = 0.28 * (1 - 0.65 * crisp);
+    // Idle drift eases off on the structured shapes (the cube, the chain, the
+    // parallel chains — stages 2-4) so they stay legible, while the torus and the
+    // network keep breathing. A burst of turbulence kicks in whenever the field
+    // is mid-morph.
+    const dominant = mix > 0.5 ? b : a;
+    const crisp = dominant >= 2 && dominant <= 4 ? 1 : 0;
+    const idle = 0.28 * (1 - 0.7 * crisp);
     const churn = velocity * 2.6;
 
     for (let i = 0; i < this.count; i++) {
