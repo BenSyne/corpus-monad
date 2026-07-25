@@ -3,7 +3,14 @@ import { createPublicClient, http, formatEther, type Address } from "viem";
 import deployment from "@deployment";
 import { corpusAbi } from "@abi";
 
-const POLL_MS = 700;
+/**
+ * A local chain can be polled hard; a shared public RPC cannot. Monad's public
+ * endpoints cap requests per second, and each poll makes several calls, so a
+ * hosted dashboard has to back off or it rate-limits itself into looking offline.
+ */
+const POLL_MS = Number(import.meta.env.VITE_CHAIN_ID || deployment.chainId) === 31337 ? 700 : 4000;
+/** One dropped request shouldn't announce an outage — public RPCs blip. */
+const OFFLINE_AFTER_FAILURES = 3;
 
 /**
  * A hosted build has to talk to endpoints the visitor's browser can actually
@@ -89,6 +96,7 @@ export function useCorpusState(): CorpusState {
 
   useEffect(() => {
     let cancelled = false;
+    let failures = 0;
 
     async function poll() {
       let chainOnline = false;
@@ -133,8 +141,12 @@ export function useCorpusState(): CorpusState {
           holders,
           chainOnline,
         };
+        failures = 0;
       } catch {
-        next = { chainOnline: false };
+        // Keep the last good data on screen and only claim an outage once the
+        // chain has actually failed repeatedly.
+        failures += 1;
+        next = failures >= OFFLINE_AFTER_FAILURES ? { chainOnline: false } : {};
       }
 
       try {
@@ -177,4 +189,9 @@ export const ROLE_NAMES: Record<string, string> = {
   "0x976EA74026E726554dB657fA54763abd0C3a0aa9": "buyer",
   // Any agent that connects over MCP and hasn't been given its own key.
   "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f": "outside agent (MCP)",
+  // Monad testnet demo wallets (public addresses only).
+  "0x5B4844Ab4B330D4B7D4Cf60a6C4a47a0820a4a40": "contributor agent",
+  "0x419b6f18CDDB3CF30734C266479758e951c606ff": "buyer",
+  "0x40B8607E3020886D8f61474A70099fAD80BF1b90": "scorer",
+  "0x8B02Af48b2cB2e83ebFbe5823bEb7f0570BdCdC5": "curator",
 };
