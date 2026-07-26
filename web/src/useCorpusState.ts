@@ -38,7 +38,13 @@ const chain = {
   rpcUrls: { default: { http: [RPC_URL] } },
 } as const;
 
-const client = createPublicClient({ chain, transport: http(RPC_URL) });
+// Public RPCs cap requests per second and a single poll reads a dozen values.
+// Batching collapses them into one JSON-RPC request, which keeps a hosted
+// dashboard well under the limit instead of rate-limiting itself into "offline".
+const client = createPublicClient({
+  chain,
+  transport: http(RPC_URL, { batch: { wait: 40 } }),
+});
 const corpus = CORPUS_ADDRESS;
 
 export type Submission = {
@@ -108,7 +114,7 @@ export function useCorpusState(): CorpusState {
       try {
         const [blockNumber, submissions, totalSupply, scoredCount, treasury] = await Promise.all([
           client.getBlockNumber(),
-          client.readContract({ address: corpus, abi: corpusAbi, functionName: "getSubmissions", args: [0n, 200n] }),
+          client.readContract({ address: corpus, abi: corpusAbi, functionName: "getSubmissions", args: [0n, 60n] }),
           client.readContract({ address: corpus, abi: corpusAbi, functionName: "totalSupply" }),
           client.readContract({ address: corpus, abi: corpusAbi, functionName: "scoredCount" }),
           client.getBalance({ address: corpus }),
