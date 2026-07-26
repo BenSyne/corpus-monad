@@ -190,8 +190,8 @@ export const ROLE_NAMES: Record<string, string> = {
   // Any agent that connects over MCP and hasn't been given its own key.
   "0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f": "outside agent (MCP)",
   // Monad testnet demo wallets (public addresses only).
-  "0x5B4844Ab4B330D4B7D4Cf60a6C4a47a0820a4a40": "contributor agent",
-  "0x419b6f18CDDB3CF30734C266479758e951c606ff": "buyer",
-  "0x40B8607E3020886D8f61474A70099fAD80BF1b90": "scorer",
-  "0x8B02Af48b2cB2e83ebFbe5823bEb7f0570BdCdC5": "curator",
+  "0xB7af419417957608D6B5fd9033C9D33f6BE360D6": "contributor agent",
+  "0xcb0Bdc93077EF5E5C3D5A514D79c1fB72dC04bE6": "buyer",
+  "0x3bcC7415579a27859410B6f1Af2DAcB6B3D876BB": "scorer",
+  "0x1a4C2BD22296CaAE32414CB9A785CE238e0Dcf85": "curator",
 };
