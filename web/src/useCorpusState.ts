@@ -20,7 +20,10 @@ const OFFLINE_AFTER_FAILURES = 3;
  */
 const RPC_URL = import.meta.env.VITE_RPC_URL || deployment.rpcUrl;
 const SCORER_API = import.meta.env.VITE_SCORER_API || "http://127.0.0.1:8787";
-const CORPUS_ADDRESS = (import.meta.env.VITE_CORPUS_ADDRESS || deployment.corpus) as Address;
+// The committed deployment wins: it is written by the deploy script and always
+// matches the contract that actually exists. An env override is only consulted
+// when no deployment file is present, so a stale secret cannot break the app.
+const CORPUS_ADDRESS = (deployment.corpus || import.meta.env.VITE_CORPUS_ADDRESS) as Address;
 const CHAIN_ID = Number(import.meta.env.VITE_CHAIN_ID || deployment.chainId);
 export const EXPLORER = import.meta.env.VITE_EXPLORER || deployment.explorer || "";
 export const CHAIN = { id: CHAIN_ID, corpus: CORPUS_ADDRESS };

@@ -6,7 +6,12 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@deployment": fileURLToPath(new URL("../shared/deployments/local.json", import.meta.url)),
+      "@deployment": fileURLToPath(new URL(
+        process.env.VITE_CHAIN_ID === "10143"
+          ? "../shared/deployments/testnet.json"
+          : "../shared/deployments/local.json",
+        import.meta.url,
+      )),
       "@abi": fileURLToPath(new URL("../shared/src/abi.ts", import.meta.url)),
     },
   },
